@@ -1,6 +1,6 @@
 {
   // Đổi "name" cho trùng với tên Worker trên Cloudflare dashboard
-  "name": "trangchu",
+  "name": "sotay",
   "compatibility_date": "2026-09-01",
   "assets": {
     "directory": "./public"
