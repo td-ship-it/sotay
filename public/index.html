@@ -96,10 +96,25 @@ main { flex: 1; padding-block: 36px 48px; }
 }
 .empty { color: var(--muted); padding: 24px 0; }
 
-/* Footer */
-footer { border-top: 1px solid var(--line); background: var(--surface); }
-footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; padding-block: 16px; font-size: .85rem; color: var(--muted); }
-footer strong { color: var(--fg); font-weight: 600; }
+/* Footer: dải xanh đậm nhận diện, 3 cột thông tin + dòng bản quyền */
+footer { --f-bg: #0b3d24; --f-bg2: #082e1b; --f-fg: #e4f1e9; --f-muted: #a8c7b4; --f-line: rgba(255,255,255,.12);
+  background: var(--f-bg); color: var(--f-fg); font-size: .9rem; border-top: 4px solid #05783d; }
+.f-main { display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 32px; padding-block: 36px 28px; }
+.f-col { min-width: 0; }
+.f-unit { font-size: 1.05rem; font-weight: 700; margin: 0 0 2px; letter-spacing: .01em; }
+.f-school { margin: 0 0 12px; color: var(--f-muted); }
+.f-note { margin: 0; color: var(--f-muted); max-width: 42ch; line-height: 1.6; }
+.f-title { margin: 0 0 12px; font-size: .75rem; font-weight: 600; text-transform: uppercase; letter-spacing: .1em; color: #d8b45f; }
+.f-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.f-list a { color: var(--f-fg); text-decoration: none; display: inline-flex; align-items: center; gap: 8px; }
+.f-list a::before { content: ""; width: 5px; height: 5px; border-radius: 50%; background: #3fae72; flex: none; }
+.f-list a:hover { color: #ffffff; text-decoration: underline; text-underline-offset: 3px; }
+.f-list a:focus-visible { outline: 2px solid #d8b45f; outline-offset: 2px; }
+.f-list li.plain { color: var(--f-muted); }
+.f-bottom { background: var(--f-bg2); border-top: 1px solid var(--f-line); }
+.f-bottom .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px 16px; padding-block: 14px; font-size: .8rem; color: var(--f-muted); }
+@media (max-width: 760px) { .f-main { grid-template-columns: 1fr 1fr; } .f-main .f-col:first-child { grid-column: 1 / -1; } }
+@media (max-width: 480px) { .f-main { grid-template-columns: 1fr; gap: 24px; } }
 
 @media (max-width: 480px) {
   .search { flex-basis: 100%; }
@@ -136,9 +151,28 @@ footer strong { color: var(--fg); font-weight: 600; }
 </main>
 
 <footer>
-  <div class="wrap">
-    <span><strong>Phòng Quản trị tổng hợp</strong> · Trường Dược</span>
-    <span id="year"></span>
+  <div class="wrap f-main">
+    <div class="f-col">
+      <p class="f-unit">Phòng Quản trị tổng hợp</p>
+      <p class="f-school">Trường Dược – Đại học Y Dược Thành phố Hồ Chí Minh</p>
+      <p class="f-note">Đơn vị quản lý và vận hành cổng liên kết các ứng dụng nội bộ dành cho viên chức, người lao động của Trường.</p>
+    </div>
+    <div class="f-col">
+      <p class="f-title">Ứng dụng</p>
+      <ul class="f-list" id="f-apps"></ul>
+    </div>
+    <div class="f-col">
+      <p class="f-title">Hỗ trợ</p>
+      <ul class="f-list">
+        <li class="plain">Liên hệ Phòng Quản trị tổng hợp khi gặp sự cố truy cập hoặc cần bổ sung liên kết.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="f-bottom">
+    <div class="wrap">
+      <span id="year">© Trường Dược</span>
+      <span>Phòng Quản trị tổng hợp</span>
+    </div>
   </div>
 </footer>
 
@@ -198,7 +232,8 @@ function render(q) {
 }
 
 document.getElementById("q").addEventListener("input", e => render(e.target.value));
-document.getElementById("year").textContent = "© " + new Date().getFullYear();
+document.getElementById("year").textContent = "© " + new Date().getFullYear() + " Trường Dược – Đại học Y Dược TP. Hồ Chí Minh";
+document.getElementById("f-apps").innerHTML = LINKS.map(l => `<li><a href="${esc(l.url)}" target="_blank" rel="noopener">${esc(l.title)}</a></li>`).join("");
 render("");
 </script>
 </body>
