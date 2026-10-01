@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Sổ tay Cổng liên kết Trường Dược</title>
+<title>Cổng liên kết Trường Dược</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
@@ -68,7 +68,7 @@ main { flex: 1; padding-block: 36px 48px; }
 .search input:focus { outline: 2px solid var(--brand); outline-offset: 1px; border-color: transparent; }
 .search svg { position: absolute; left: 11px; top: 50%; translate: 0 -50%; width: 16px; height: 16px; color: var(--muted); }
 
-.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; }
 .card {
   display: flex; flex-direction: column; gap: 12px; min-width: 0;
   background: var(--surface); border: 1px solid var(--line); border-radius: 12px;
@@ -94,6 +94,10 @@ main { flex: 1; padding-block: 36px 48px; }
   font-family: var(--font-mono); font-size: .78rem; color: var(--muted);
   overflow-wrap: anywhere;
 }
+.card.is-pending { cursor: default; border-style: dashed; }
+.card.is-pending:hover { transform: none; box-shadow: none; border-color: var(--line); }
+.card.is-pending .arrow { opacity: .35; }
+.card.is-pending .url { font-family: var(--font-body); font-style: italic; }
 .empty { color: var(--muted); padding: 24px 0; }
 
 /* Footer: dải xanh đậm nhận diện, 3 cột thông tin + dòng bản quyền */
@@ -116,10 +120,37 @@ footer { --f-bg: #0b3d24; --f-bg2: #082e1b; --f-fg: #e4f1e9; --f-muted: #a8c7b4;
 @media (max-width: 760px) { .f-main { grid-template-columns: 1fr 1fr; } .f-main .f-col:first-child { grid-column: 1 / -1; } }
 @media (max-width: 480px) { .f-main { grid-template-columns: 1fr; gap: 24px; } }
 
-@media (max-width: 480px) {
-  .search { flex-basis: 100%; }
-  .logo img { height: 52px; }
+/* Điện thoại: thẻ chuyển thành dạng hàng gọn, dễ chạm bằng ngón cái */
+@media (max-width: 600px) {
+  .wrap { padding-inline: 16px; }
+  header .wrap { padding-block: 10px; }
+  .logo img { height: 46px; }
   .tag { display: none; }
+  main { padding-block: 20px 32px; }
+  .intro { margin-bottom: 16px; gap: 12px; }
+  .intro h2 { font-size: 1.25rem; }
+  .intro p { font-size: .88rem; }
+  .search { flex-basis: 100%; }
+  .search input { font-size: 16px; padding-block: 11px; } /* 16px để iPhone không tự phóng to */
+  .grid { grid-template-columns: 1fr; gap: 10px; }
+  .card {
+    display: grid; grid-template-columns: auto 1fr auto; grid-template-rows: auto auto;
+    column-gap: 14px; row-gap: 2px; align-items: center; padding: 14px; border-radius: 12px;
+  }
+  .card:hover { transform: none; }
+  .card:active { background: var(--brand-soft); }
+  .card-top { display: contents; }
+  .card .icon { grid-row: 1 / 3; grid-column: 1; width: 42px; height: 42px; }
+  .card .arrow { grid-row: 1 / 3; grid-column: 3; }
+  .card h3 { grid-column: 2; grid-row: 1; font-size: 1rem; line-height: 1.3; }
+  .card p { grid-column: 2; grid-row: 2; font-size: .84rem; line-height: 1.4;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .card .url { display: none; }
+  .f-main { padding-block: 24px 18px; gap: 18px; }
+  .f-note, .f-main .f-col:nth-child(2) { display: none; } /* danh sách ứng dụng đã có ngay phía trên */
+  .f-school { margin-bottom: 0; }
+  .f-bottom .wrap { flex-direction: column; gap: 2px; }
+  .f-list a { padding-block: 4px; }
 }
 @media (prefers-reduced-motion: reduce) { .card, .arrow { transition: none; } .card:hover { transform: none; } }
 </style>
@@ -196,6 +227,12 @@ const LINKS = [
     desc: "Đánh giá, xếp loại chất lượng viên chức và người lao động.",
     url: "https://danhgia.truongduoc.workers.dev/",
     icon: "check"
+  },
+  {
+    title: "Thông tin các SOP",
+    desc: "Tra cứu các quy trình thao tác chuẩn (SOP) đang được áp dụng tại Trường.",
+    url: "https://sop.truongduoc.workers.dev/",
+    icon: "sop"
   }
 ];
 
@@ -203,6 +240,7 @@ const ICONS = {
   calendar: '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4M8 14h2M14 14h2M8 17h2"/>',
   award: '<circle cx="12" cy="9" r="6"/><path d="M8.5 13.9L7 22l5-3 5 3-1.5-8.1"/>',
   check: '<rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 12l3 3 5-6"/>',
+  sop: '<path d="M14 3H6a2 2 0 00-2 2v14a2 2 0 002 2h12a2 2 0 002-2V9z"/><path d="M14 3v6h6M8 13h8M8 17h5"/>',
   link: '<path d="M10 14a4 4 0 005.7 0l3-3a4 4 0 00-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 00-5.7 0l-3 3a4 4 0 005.7 5.7l1-1"/>'
 };
 
@@ -219,21 +257,21 @@ function render(q) {
   const k = norm(q || "");
   const list = LINKS.filter(l => !k || norm(l.title + " " + l.desc).includes(k));
   grid.innerHTML = list.map(l => `
-    <a class="card" href="${esc(l.url)}" target="_blank" rel="noopener">
+    <${l.url ? `a class="card" href="${esc(l.url)}" target="_blank" rel="noopener"` : `div class="card is-pending" aria-disabled="true"`}>
       <div class="card-top">
         <span class="icon">${svg(ICONS[l.icon] || ICONS.link)}</span>
         <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg>
       </div>
       <h3>${esc(l.title)}</h3>
       <p>${esc(l.desc)}</p>
-      <span class="url">${esc(l.url.replace(/^https?:\/\//, "").replace(/\/$/, ""))}</span>
-    </a>`).join("");
+      <span class="url">${l.url ? esc(l.url.replace(/^https?:\/\//, "").replace(/\/$/, "")) : "Đang cập nhật liên kết"}</span>
+    </${l.url ? "a" : "div"}>`).join("");
   empty.hidden = list.length > 0;
 }
 
 document.getElementById("q").addEventListener("input", e => render(e.target.value));
 document.getElementById("year").textContent = "© " + new Date().getFullYear() + " Trường Dược – Đại học Y Dược TP. Hồ Chí Minh";
-document.getElementById("f-apps").innerHTML = LINKS.map(l => `<li><a href="${esc(l.url)}" target="_blank" rel="noopener">${esc(l.title)}</a></li>`).join("");
+document.getElementById("f-apps").innerHTML = LINKS.filter(l => l.url).map(l => `<li><a href="${esc(l.url)}" target="_blank" rel="noopener">${esc(l.title)}</a></li>`).join("");
 render("");
 </script>
 </body>
